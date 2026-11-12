@@ -202,7 +202,7 @@ As documented in [`code/evaluation/usage_report.md`](code/evaluation/usage_repor
 - **Model Calls:** **0** (100% deterministic local rule and evidence engine)
 - **Token Usage:** **0 input / 0 output tokens**
 - **Execution API Cost:** **$0.00**
-- **Design Invariants:** Zero LLM hallucinations, reproducible execution, atomic file writes, and memory-safe batch processing.
+- **Design Invariants:** No external LLM calls, reproducible execution, atomic file writes, and memory-safe batch processing.
 
 ---
 
@@ -239,7 +239,7 @@ Optional arguments:
 ## Official HackerRank Feedback & Improvement Areas
 
 > [!NOTE]
-> The items below represent diagnostic feedback and recommendations provided by HackerRank's post-submission review committee. They are documented here transparently as roadmap improvement areas for future iterations and should not be misconstrued as completed or currently implemented functionality.
+> The items below represent diagnostic feedback and recommendations provided by HackerRank's post-submission feedback. They are documented here transparently as roadmap improvement areas for future iterations and should not be misconstrued as completed or currently implemented functionality.
 
 ### 1. Judge Interview
 - Prepare stronger technical explanations for architectural decisions, including correlation windows and evidence verification.
