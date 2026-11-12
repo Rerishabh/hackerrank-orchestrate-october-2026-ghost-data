@@ -1,4 +1,4 @@
-﻿# Ghost Data Still Exists â€” Deletion-Audit Engine
+# Ghost Data Still Exists - Deletion-Audit Engine
 
 [![HackerRank Orchestrate](https://img.shields.io/badge/HackerRank-Orchestrate_October_2026-00EA64?style=flat&logo=hackerrank&logoColor=black)](https://www.hackerrank.com/contests/hackerrank-orchestrate-october26/challenges/ghost-data-still-exists)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
@@ -46,7 +46,7 @@ Official results achieved in the **HackerRank Orchestrate October 2026** competi
    - Enforces granular policy actions (`DELETE`, `REDACT`, `ANONYMIZE`, `RETAIN`, and `ACCOUNT_TOMBSTONE`) defined in `deletion_rules.csv`.
    - Distinguishes legally required account tombstones (where internal identifiers remain while direct PII like email, name, and phone must be redacted) from prohibited PII exposures.
    - Identifies active synchronization flows and restore risks that could resurrect deleted records.
-   - Emits strictly ordered steps: `FINDING` &rarr; `REMEDIATION` &rarr; `VERIFICATION`, ensuring prerequisite flows and restore paths are disabled prior to downstream data cleanup.
+   - Emits strictly ordered steps: `FINDING` -> `REMEDIATION` -> `VERIFICATION`, ensuring prerequisite flows and restore paths are disabled prior to downstream data cleanup.
 
 5. **Deterministic CSV Generation & Validation**
    - Processes all 518 evaluation requests in memory with guaranteed natural numeric sequence ordering (`case_33` through `case_550`).
@@ -58,38 +58,38 @@ Official results achieved in the **HackerRank Orchestrate October 2026** competi
 
 The system is organized into a four-phase modular pipeline:
 
-```
+```text
                           deletion_requests.csv
-                                    â”‚
-                                    â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Phase 1: Authorization & Identity (code/authorization.py, identity.py) â”‚
-â”‚ - Classify request text intent (DELETE vs. ACCESS/STATUS/OPT-OUT)      â”‚
-â”‚ - Reconstruct temporal subject identity at audit_at cutoff             â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                    â”‚
-                                    â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Phase 2: Evidence Foundation (code/evidence/parser.py)                 â”‚
-â”‚ - Parse evidence manifest bounded by audit_at capture time             â”‚
-â”‚ - Ingest SQL replicas, JSON exports, logs, text, and PDF artifacts     â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                    â”‚
-                                    â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Phase 3: State & Policy Planning (code/state.py, policy.py)            â”‚
-â”‚ - Correlate evidence observations to subject identifiers               â”‚
-â”‚ - Detect ghost records, active data flows, and restore risks           â”‚
-â”‚ - Generate ordered FINDING, REMEDIATION, and VERIFICATION steps        â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                    â”‚
-                                    â–¼
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Phase 4: Execution & Delivery (code/main.py, io_loader.py)             â”‚
-â”‚ - Execute batch pipeline across all requests in memory                 â”‚
-â”‚ - Enforce strict output schema and natural case ordering               â”‚
-â”‚ - Perform atomic write to root output.csv                              â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                    |
+                                    v
++------------------------------------------------------------------------+
+| Phase 1: Authorization & Identity (code/authorization.py, identity.py) |
+| - Classify request text intent (DELETE vs. ACCESS/STATUS/OPT-OUT)      |
+| - Reconstruct temporal subject identity at audit_at cutoff             |
++-----------------------------------+------------------------------------+
+                                    |
+                                    v
++------------------------------------------------------------------------+
+| Phase 2: Evidence Foundation (code/evidence/parser.py)                 |
+| - Parse evidence manifest bounded by audit_at capture time             |
+| - Ingest SQL replicas, JSON exports, logs, text, and PDF artifacts     |
++-----------------------------------+------------------------------------+
+                                    |
+                                    v
++------------------------------------------------------------------------+
+| Phase 3: State & Policy Planning (code/state.py, policy.py)            |
+| - Correlate evidence observations to subject identifiers               |
+| - Detect ghost records, active data flows, and restore risks           |
+| - Generate ordered FINDING, REMEDIATION, and VERIFICATION steps        |
++-----------------------------------+------------------------------------+
+                                    |
+                                    v
++------------------------------------------------------------------------+
+| Phase 4: Execution & Delivery (code/main.py, io_loader.py)             |
+| - Execute batch pipeline across all requests in memory                 |
+| - Enforce strict output schema and natural case ordering               |
+| - Perform atomic write to root output.csv                              |
++------------------------------------------------------------------------+
 ```
 
 ---
@@ -98,28 +98,28 @@ The system is organized into a four-phase modular pipeline:
 
 ```text
 .
-â”œâ”€â”€ .gitignore                          # Git exclusions for dataset, cache, and submission files
-â”œâ”€â”€ README.md                           # Project documentation and competition overview
-â”œâ”€â”€ output.csv                          # Generated deletion audit results (518 cases)
-â””â”€â”€ code/
-    â”œâ”€â”€ authorization.py                # Request intent classification and authorization logic
-    â”œâ”€â”€ identity.py                     # Historical identity reconstruction and cutoff rollback
-    â”œâ”€â”€ io_loader.py                    # Input CSV loading, schema validation, and CSV output writer
-    â”œâ”€â”€ main.py                         # CLI entry point and pipeline orchestrator
-    â”œâ”€â”€ models.py                       # Dataclasses and type definitions (Request, Step, Subject, etc.)
-    â”œâ”€â”€ policy.py                       # Deletion rule lookup and category mapping
-    â”œâ”€â”€ state.py                        # Multi-system evidence correlation and plan synthesis
-    â”œâ”€â”€ evaluation/
-    â”‚   â”œâ”€â”€ evaluation_report.md        # Comprehensive benchmark report, metrics, and error analysis
-    â”‚   â””â”€â”€ usage_report.md             # Execution environment, runtime, and resource usage profile
-    â”œâ”€â”€ evidence/
-    â”‚   â”œâ”€â”€ __init__.py
-    â”‚   â””â”€â”€ parser.py                   # Multi-format evidence parser (SQL, JSON, logs, text, PDFs)
-    â””â”€â”€ tests/
-        â”œâ”€â”€ test_phase1.py              # Unit tests for Phase 1 (Authorization & Identity)
-        â”œâ”€â”€ test_phase2.py              # Unit tests for Phase 2 (Evidence & Cutoff Parsing)
-        â”œâ”€â”€ test_phase3.py              # Unit tests for Phase 3 (State, Policy & Planning)
-        â””â”€â”€ test_phase4.py              # Unit tests for Phase 4 (Pipeline Runner & Output Validation)
+|-- .gitignore                          # Git exclusions for dataset, cache, and submission files
+|-- README.md                           # Project documentation and competition overview
+|-- output.csv                          # Generated deletion audit results (518 cases)
+`-- code/
+    |-- authorization.py                # Request intent classification and authorization logic
+    |-- identity.py                     # Historical identity reconstruction and cutoff rollback
+    |-- io_loader.py                    # Input CSV loading, schema validation, and CSV output writer
+    |-- main.py                         # CLI entry point and pipeline orchestrator
+    |-- models.py                       # Dataclasses and type definitions (Request, Step, Subject, etc.)
+    |-- policy.py                       # Deletion rule lookup and category mapping
+    |-- state.py                        # Multi-system evidence correlation and plan synthesis
+    |-- evaluation/
+    |   |-- evaluation_report.md        # Comprehensive benchmark report, metrics, and error analysis
+    |   `-- usage_report.md             # Execution environment, runtime, and resource usage profile
+    |-- evidence/
+    |   |-- __init__.py
+    |   `-- parser.py                   # Multi-format evidence parser (SQL, JSON, logs, text, PDFs)
+    `-- tests/
+        |-- test_phase1.py              # Unit tests for Phase 1 (Authorization & Identity)
+        |-- test_phase2.py              # Unit tests for Phase 2 (Evidence & Cutoff Parsing)
+        |-- test_phase3.py              # Unit tests for Phase 3 (State, Policy & Planning)
+        `-- test_phase4.py              # Unit tests for Phase 4 (Pipeline Runner & Output Validation)
 ```
 
 ---
@@ -236,15 +236,10 @@ Optional arguments:
 
 ---
 
-## Challenge Reference
-
-For more information regarding the competition specification and rules, visit:
-[HackerRank Orchestrate â€” Ghost Data Still Exists](https://www.hackerrank.com/contests/hackerrank-orchestrate-october26/challenges/ghost-data-still-exists)
-
-
 ## Official HackerRank Feedback & Improvement Areas
 
-Following the October Orchestrate submission, HackerRank provided individual post-submission feedback across all four evaluation components:
+> [!NOTE]
+> The items below represent diagnostic feedback and recommendations provided by HackerRank's post-submission review committee. They are documented here transparently as roadmap improvement areas for future iterations and should not be misconstrued as completed or currently implemented functionality.
 
 ### 1. Judge Interview
 - Prepare stronger technical explanations for architectural decisions, including correlation windows and evidence verification.
@@ -270,3 +265,10 @@ Following the October Orchestrate submission, HackerRank provided individual pos
 - Identify ways deleted data could reappear through replicas, backups, or other systems.
 - Prevent identifiers from one deletion request from leaking into another, and apply exact policy treatments (deletion vs. redaction).
 - Require verification evidence for each remediation action before determining the final status.
+
+---
+
+## Challenge Reference
+
+For more information regarding the competition specification and rules, visit:
+[HackerRank Orchestrate - Ghost Data Still Exists](https://www.hackerrank.com/contests/hackerrank-orchestrate-october26/challenges/ghost-data-still-exists)
