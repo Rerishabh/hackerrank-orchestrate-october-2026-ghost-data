@@ -2,7 +2,6 @@
 
 [![HackerRank Orchestrate](https://img.shields.io/badge/HackerRank-Orchestrate_October_2026-00EA64?style=flat&logo=hackerrank&logoColor=black)](https://www.hackerrank.com/contests/hackerrank-orchestrate-october26/challenges/ghost-data-still-exists)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Zero External LLM Cost](https://img.shields.io/badge/LLM_Calls-0_($0.00)-brightgreen)](#execution-and-resource-profile)
 
 A deterministic privacy-compliance and deletion-audit engine developed for the **HackerRank Orchestrate (October 2026)** hackathon challenge: *Ghost Data Still Exists*.
